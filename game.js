@@ -88,6 +88,7 @@ function init() {
     console.log("init");
     get = GetPlayer().GetVar;
     set = GetPlayer().SetVar;
+    initGameVars();
     chief = new Chief();
 }
 
@@ -97,7 +98,7 @@ var gameVars = new Map();
 function addEvent(varName) {
     console.log("addEvent -" + varName);
     gameVars.forEach(
-        (key, value) => {
+        (value, key) => {
             value.checkVar();
         }
     );
@@ -135,7 +136,7 @@ Chief.prototype.setTime = function () {
     this.time = 8;
     set(this.varTime, this.time);
     this.employee.forEach(
-        (name, employee) => {
+        (employee, name) => {
             employee.setTime();
         }
     );
@@ -163,7 +164,7 @@ Chief.prototype.addEmployeeTask = function (task) {
     console.log(this.name + ": addEmployeeTask - " + task);
     if (this.time >= 1) {
         this.employee.forEach(
-            (name, employee) => {
+            (employee, name) => {
                 if (task.includes(name) && employee.addTask(task)) {
                     this.time--;
                     set(this.varTime, this.time);
@@ -175,7 +176,7 @@ Chief.prototype.addEmployeeTask = function (task) {
 Chief.prototype.delEmployeeTask = function (task) {
     console.log(this.name + ": delEmployeeTask - " + task);
     this.employee.forEach(
-        (name, employee) => {
+        (employee, name) => {
             if (task.includes(name)) {
                 employee.delTask(task);
             }
@@ -186,7 +187,7 @@ Chief.prototype.addEmployeeMotiv = function (motiv) {
     console.log(this.name + ": addEmployeeMotiv - " + motiv);
     if (isRandom && this.time >= 1) {
         this.employee.forEach(
-            (name, employee) => {
+            (employee, name) => {
                 if (motiv.includes(name) && employee.addMotiv(motiv)) {
                     this.time--;
                     set(this.varTime, this.time);
@@ -196,7 +197,7 @@ Chief.prototype.addEmployeeMotiv = function (motiv) {
     }
     if (!isRandom && this.time >= 2) {
         this.employee.forEach(
-            (name, employee) => {
+            (employee, name) => {
                 if (motiv.includes(name) && employee.addMotiv(motiv)) {
                     this.time -= 2;
                     set(this.varTime, this.varTime);
@@ -214,7 +215,7 @@ Chief.prototype.doJob = function () {
     console.log(this.name + ": doJob");
     var arr = [];
     this.tasks.forEach(
-        (taskName, task) => {
+        (task, taskName) => {
             arr.push(task);
         }
     );
@@ -234,7 +235,7 @@ Chief.prototype.doJob = function () {
         }
     );
     this.employee.forEach(
-        (name, employee) => {
+        (employee, name) => {
             employee.doJob();
         }
     );
@@ -242,7 +243,7 @@ Chief.prototype.doJob = function () {
 Chief.prototype.setEmployeeMotiv = function () {
     console.log(this.name + ": setEmployeeMotiv - ");
     this.employee.forEach(
-        (name, employee) => {
+        (employee, name) => {
             employee.setMotiv();
         }
     );
@@ -322,7 +323,7 @@ Employee.prototype.doJob = function () {
     console.log(this.name + ": doJob");
     var arr = [];
     this.tasks.forEach(
-        (taskName, task) => {
+        (task, taskName) => {
             arr.push(task);
         }
     );
