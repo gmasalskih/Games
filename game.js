@@ -65,7 +65,10 @@ function go(varName, value) {
 }
 
 function completed() {
-
+    console.log("completed");
+    chief.doJob();
+    chief.setEmployeeMotiv();
+    chief.setTime();
 }
 
 function GameVar(varName) {
@@ -74,11 +77,12 @@ function GameVar(varName) {
 }
 
 GameVar.prototype.checkVar = function () {
+    console.log("checkVar - " + this.varName);
     if (get(this.varName) !== this.oldValue) {
         this.oldValue = get(this.varName);
         go(this.varName, this.oldValue);
     }
-}
+};
 
 function init() {
     console.log("init");
@@ -90,7 +94,8 @@ function init() {
 
 var gameVars = new Map();
 
-function run() {
+function addEvent(varName) {
+    console.log("addEvent -" + varName);
     gameVars.forEach(
         (key, value) => {
             value.checkVar();
@@ -129,7 +134,12 @@ Chief.prototype.setTime = function () {
     console.log(this.name + ": setTime - ");
     this.time = 8;
     set(this.varTime, this.time);
-}
+    this.employee.forEach(
+        (name, employee) => {
+            employee.setTime();
+        }
+    );
+};
 Chief.prototype.addSelfTask = function (task) {
     console.log(this.name + ": addSelfTask - " + task);
     if (task.includes(this.name)) {
@@ -144,11 +154,11 @@ Chief.prototype.addSelfTask = function (task) {
             this.tasks.set(task, new Task(task, 4, 3));
         }
     }
-}
+};
 Chief.prototype.delSelfTask = function (task) {
     console.log(this.name + ": delSelfTask - " + task);
     this.tasks.delete(task);
-}
+};
 Chief.prototype.addEmployeeTask = function (task) {
     console.log(this.name + ": addEmployeeTask - " + task);
     if (this.time >= 1) {
@@ -161,7 +171,7 @@ Chief.prototype.addEmployeeTask = function (task) {
             }
         );
     }
-}
+};
 Chief.prototype.delEmployeeTask = function (task) {
     console.log(this.name + ": delEmployeeTask - " + task);
     this.employee.forEach(
@@ -171,7 +181,7 @@ Chief.prototype.delEmployeeTask = function (task) {
             }
         }
     );
-}
+};
 Chief.prototype.addEmployeeMotiv = function (motiv) {
     console.log(this.name + ": addEmployeeMotiv - " + motiv);
     if (isRandom && this.time >= 1) {
@@ -194,6 +204,48 @@ Chief.prototype.addEmployeeMotiv = function (motiv) {
             }
         );
     }
+};
+Chief.prototype.addMany = function (many) {
+    console.log(this.name + ": addMany - " + many);
+    this.many += many;
+    set(this.varMoney, this.many);
+};
+Chief.prototype.doJob = function () {
+    console.log(this.name + ": doJob");
+    var arr = [];
+    this.tasks.forEach(
+        (taskName, task) => {
+            arr.push(task);
+        }
+    );
+    arr.sort(
+        (a, b) => {
+            if (a.time > b.time) return 1;
+            if (a.time === b.time) return 0;
+            if (a.time < b.time) return -1;
+        }
+    ).forEach(
+        (task) => {
+            if (this.time >= task.time) {
+                this.time -= task.time;
+                this.delTask(task.name);
+                chief.addMany(task.many);
+            }
+        }
+    );
+    this.employee.forEach(
+        (name, employee) => {
+            employee.doJob();
+        }
+    );
+}
+Chief.prototype.setEmployeeMotiv = function () {
+    console.log(this.name + ": setEmployeeMotiv - ");
+    this.employee.forEach(
+        (name, employee) => {
+            employee.setMotiv();
+        }
+    );
 }
 
 function Employee(name, varTime, varMotiv, delo, prizn, lyudi, komf) {
@@ -223,7 +275,7 @@ Employee.prototype.addMotiv = function (motiv) {
         return true;
     }
     return false;
-}
+};
 Employee.prototype.addTask = function (task) {
     console.log(this.name + ": addTask - " + task);
     if (this.time >= 1 && task.includes(this.name)) {
@@ -247,18 +299,46 @@ Employee.prototype.addTask = function (task) {
         }
     }
     return false;
-}
+};
 Employee.prototype.delTask = function (task) {
     console.log(this.name + ": delTask - " + task);
     if (task.includes(this.name)) {
+        set(task, false);
         return this.tasks.delete(task);
     }
-}
+};
 Employee.prototype.setTime = function () {
     console.log(this.name + ": setTime - ");
     this.time = Math.floor(this.motiv / 2);
     set(this.varTime, this.time);
+};
+Employee.prototype.setMotiv = function () {
+    console.log(this.name + ": setMotiv");
+    if (this.tasks.size > 0 || this.time === 0) this.motiv -= 2;
+    else this.motiv--;
+    if (this.motiv < 0) this.motiv = 0;
 }
-Employee.prototype.checkTask = function () {
-
-}
+Employee.prototype.doJob = function () {
+    console.log(this.name + ": doJob");
+    var arr = [];
+    this.tasks.forEach(
+        (taskName, task) => {
+            arr.push(task);
+        }
+    );
+    arr.sort(
+        (a, b) => {
+            if (a.time > b.time) return 1;
+            if (a.time === b.time) return 0;
+            if (a.time < b.time) return -1;
+        }
+    ).forEach(
+        (task) => {
+            if (this.time >= task.time) {
+                this.time -= task.time;
+                this.delTask(task.name);
+                chief.addMany(task.many);
+            }
+        }
+    );
+};
