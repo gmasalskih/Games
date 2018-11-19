@@ -44,6 +44,7 @@
 
 
 function go(varName, value) {
+    // console.log("go - " + varName + " - "+ value);
     if (value === true) {
         if (varName.includes("delo") || varName.includes("prizn") || varName.includes("lyudi") || varName.includes("komf")) {
             chief.addEmployeeMotiv(varName);
@@ -71,29 +72,16 @@ function completed() {
     chief.setTime();
 }
 
-function GameVar(varName) {
-    this.varName = varName;
-    this.oldValue = false;
-}
-
-GameVar.prototype.checkVar = function () {
-    console.log("checkVar - " + this.varName);
-    if (get(this.varName) !== this.oldValue) {
-        this.oldValue = get(this.varName);
-        go(this.varName, this.oldValue);
-    }
-};
-
 function init() {
     console.log("init");
+    initVars();
     get = GetPlayer().GetVar;
     set = GetPlayer().SetVar;
-    initGameVars();
     chief = new Chief();
 }
 
 
-var gameVars = new Map();
+// var gameVars = new Map();
 
 function addEvent(varName) {
     console.log("addEvent -" + varName);
@@ -165,6 +153,7 @@ Chief.prototype.addEmployeeTask = function (task) {
     if (this.time >= 1) {
         this.employee.forEach(
             (employee, name) => {
+                // console.log("addEmployeeTask"+name+" - "+employee);
                 if (task.includes(name) && employee.addTask(task)) {
                     this.time--;
                     set(this.varTime, this.time);
@@ -185,7 +174,7 @@ Chief.prototype.delEmployeeTask = function (task) {
 };
 Chief.prototype.addEmployeeMotiv = function (motiv) {
     console.log(this.name + ": addEmployeeMotiv - " + motiv);
-    if (isRandom && this.time >= 1) {
+    if (get("isRandom") && this.time >= 1) {
         this.employee.forEach(
             (employee, name) => {
                 if (motiv.includes(name) && employee.addMotiv(motiv)) {
@@ -195,12 +184,12 @@ Chief.prototype.addEmployeeMotiv = function (motiv) {
             }
         );
     }
-    if (!isRandom && this.time >= 2) {
+    if (!get("isRandom") && this.time >= 2) {
         this.employee.forEach(
             (employee, name) => {
                 if (motiv.includes(name) && employee.addMotiv(motiv)) {
                     this.time -= 2;
-                    set(this.varTime, this.varTime);
+                    set(this.varTime, this.time);
                 }
             }
         );
@@ -263,9 +252,10 @@ function Employee(name, varTime, varMotiv, delo, prizn, lyudi, komf) {
 }
 
 Employee.prototype.addMotiv = function (motiv) {
-    console.log(this.name + ": addTask - " + motiv);
+    console.log(this.name + ": addMotiv - " + motiv);
     if (this.time >= 1 && motiv.includes(this.name)) {
         this.time--;
+        set(this.varTime, this.time);
         if (motiv.includes("delo")) this.motiv += this.delo;
         if (motiv.includes("prizn")) this.motiv += this.prizn;
         if (motiv.includes("lyudi")) this.motiv += this.lyudi;
@@ -322,12 +312,8 @@ Employee.prototype.setMotiv = function () {
 Employee.prototype.doJob = function () {
     console.log(this.name + ": doJob");
     var arr = [];
-    this.tasks.forEach(
-        (task, taskName) => {
-            arr.push(task);
-        }
-    );
-    arr.sort(
+
+    Array.from(this.tasks.values()).sort(
         (a, b) => {
             if (a.time > b.time) return 1;
             if (a.time === b.time) return 0;
@@ -337,9 +323,30 @@ Employee.prototype.doJob = function () {
         (task) => {
             if (this.time >= task.time) {
                 this.time -= task.time;
-                this.delTask(task.name);
                 chief.addMany(task.many);
             }
         }
     );
+
+
+    // this.tasks.forEach(
+    //     (task, taskName) => {
+    //         arr.push(task);
+    //     }
+    // );
+    // arr.sort(
+    //     (a, b) => {
+    //         if (a.time > b.time) return 1;
+    //         if (a.time === b.time) return 0;
+    //         if (a.time < b.time) return -1;
+    //     }
+    // ).forEach(
+    //     (task) => {
+    //         if (this.time >= task.time) {
+    //             this.time -= task.time;
+    //             this.delTask(task.name);
+    //             chief.addMany(task.many);
+    //         }
+    //     }
+    // );
 };

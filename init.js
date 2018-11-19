@@ -4,14 +4,14 @@ function GameVar(varName) {
 }
 
 GameVar.prototype.checkVar = function () {
-    console.log("checkVar - " + this.varName);
     if (get(this.varName) !== this.oldValue) {
         this.oldValue = get(this.varName);
         go(this.varName, this.oldValue);
     }
 };
 
-function initGameVars() {
+function initVars() {
+    console.log("initVars");
     gameVars = new Map()
         .set("delo_1_s1", new GameVar("delo_1_s1"))
         .set("delo_2_s1", new GameVar("delo_2_s1"))
