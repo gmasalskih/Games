@@ -310,6 +310,7 @@ Employee.prototype.setMotiv = function () {
     if (this.tasks.size > 0 || this.time === 0) this.motiv -= 2;
     else this.motiv--;
     if (this.motiv < 0) this.motiv = 0;
+    set(this.varMotiv, this.motiv)
 }
 Employee.prototype.doJob = function () {
     console.log(this.name + ": doJob");
