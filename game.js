@@ -84,7 +84,20 @@ function init() {
 // var gameVars = new Map();
 
 function addEvent(varName) {
+    //Это костыль
     console.log("addEvent -" + varName);
+    if (varName === "isRandom") {
+        if (get("isRandom") && chief.time >= 1) {
+            chief.time--;
+            set(chief.varTime, chief.time);
+            return;
+        }
+        if (!get("isRandom") && chief.time >= 2) {
+            chief.time -= 2;
+            set(chief.varTime, chief.time);
+            return;
+        }
+    }
     gameVars.forEach(
         (value, key) => {
             value.checkVar();
@@ -174,21 +187,11 @@ Chief.prototype.delEmployeeTask = function (task) {
 };
 Chief.prototype.addEmployeeMotiv = function (motiv) {
     console.log(this.name + ": addEmployeeMotiv - " + motiv);
-    if (get("isRandom") && this.time >= 1) {
+    if (this.time >= 1) {
         this.employee.forEach(
             (employee, name) => {
                 if (motiv.includes(name) && employee.addMotiv(motiv)) {
                     this.time--;
-                    set(this.varTime, this.time);
-                }
-            }
-        );
-    }
-    if (!get("isRandom") && this.time >= 2) {
-        this.employee.forEach(
-            (employee, name) => {
-                if (motiv.includes(name) && employee.addMotiv(motiv)) {
-                    this.time -= 2;
                     set(this.varTime, this.time);
                 }
             }
