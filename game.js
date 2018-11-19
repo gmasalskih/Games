@@ -201,6 +201,8 @@ Chief.prototype.addMany = function (many) {
     set(this.varMoney, this.many);
 };
 Chief.prototype.doJob = function () {
+    this.many -= 20;
+    set(this.varMoney, this.many);
     console.log(this.name + ": doJob");
     var arr = [];
     this.tasks.forEach(
@@ -218,7 +220,7 @@ Chief.prototype.doJob = function () {
         (task) => {
             if (this.time >= task.time) {
                 this.time -= task.time;
-                this.delTask(task.name);
+                // this.delTask(task.name);
                 chief.addMany(task.many);
             }
         }
