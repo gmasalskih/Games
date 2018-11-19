@@ -5,6 +5,7 @@ function GameVar(varName) {
 
 GameVar.prototype.checkVar = function () {
     if (get(this.varName) !== this.oldValue) {
+        alert("Имя переменной: "+this.varName+". Старое занчение: "+this.oldValue+". Новое значение: "+get(this.varName));
         this.oldValue = get(this.varName);
         go(this.varName, this.oldValue);
     }
