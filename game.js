@@ -42,6 +42,7 @@
 //     defer: true
 // });
 
+setTimeout(init, 5000);
 
 function go(varName, value) {
     // console.log("go - " + varName + " - "+ value);
@@ -162,11 +163,10 @@ Chief.prototype.delSelfTask = function (task) {
     this.tasks.delete(task);
 };
 Chief.prototype.addEmployeeTask = function (task) {
-    console.log(this.name + ": addEmployeeTask - " + task);
+    // console.log(this.name + ": addEmployeeTask - " + task);
     if (this.time >= 1) {
         this.employee.forEach(
             (employee, name) => {
-                // console.log("addEmployeeTask"+name+" - "+employee);
                 if (task.includes(name) && employee.addTask(task)) {
                     this.time--;
                     set(this.varTime, this.time);
@@ -254,6 +254,7 @@ function Employee(name, varTime, varMotiv, delo, prizn, lyudi, komf) {
     this.lyudi = lyudi;
     this.komf = komf;
     this.tasks = new Map();
+    this.strTime = "";
 }
 
 Employee.prototype.addMotiv = function (motiv) {
@@ -273,24 +274,26 @@ Employee.prototype.addMotiv = function (motiv) {
     return false;
 };
 Employee.prototype.addTask = function (task) {
-    console.log(this.name + ": addTask - " + task);
     if (this.time >= 1 && task.includes(this.name)) {
         if (task.includes("task_2_1")) {
             this.tasks.set(task, new Task(task, 2, 1));
             this.time--;
             set(this.varTime, this.time);
+            console.log(this.name + ": addTask - " + task);
             return true;
         }
         if (task.includes("task_3_2")) {
             this.tasks.set(task, new Task(task, 3, 2));
             this.time--;
             set(this.varTime, this.time);
+            console.log(this.name + ": addTask - " + task);
             return true;
         }
         if (task.includes("task_4_3")) {
             this.tasks.set(task, new Task(task, 4, 3));
             this.time--;
             set(this.varTime, this.time);
+            console.log(this.name + ": addTask - " + task);
             return true;
         }
     }
@@ -305,7 +308,7 @@ Employee.prototype.delTask = function (task) {
 };
 Employee.prototype.setTime = function () {
     console.log(this.name + ": setTime - ");
-    this.time = Math.floor(this.motiv / 2);
+    this.time = this.motiv / 2;
     set(this.varTime, this.time);
 };
 Employee.prototype.setMotiv = function () {
