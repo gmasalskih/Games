@@ -248,20 +248,20 @@ function Employee(name, varTime, varMotiv, delo, prizn, lyudi, komf) {
     this.varTime = varTime;
     this.varMotiv = varMotiv;
     this.motiv = get(this.varMotiv);
-    this.time = get(this.varTime);
+    this.time = 6;
     this.delo = delo;
     this.prizn = prizn;
     this.lyudi = lyudi;
     this.komf = komf;
     this.tasks = new Map();
-    this.strTime = "";
+    this.setTimeFormat();
 }
 
 Employee.prototype.addMotiv = function (motiv) {
     console.log(this.name + ": addMotiv - " + motiv);
     if (this.time >= 1 && motiv.includes(this.name)) {
         this.time--;
-        set(this.varTime, this.time);
+        this.setTimeFormat();
         if (motiv.includes("delo")) this.motiv += this.delo;
         if (motiv.includes("prizn")) this.motiv += this.prizn;
         if (motiv.includes("lyudi")) this.motiv += this.lyudi;
@@ -278,21 +278,21 @@ Employee.prototype.addTask = function (task) {
         if (task.includes("task_2_1")) {
             this.tasks.set(task, new Task(task, 2, 1));
             this.time--;
-            set(this.varTime, this.time);
+            this.setTimeFormat();
             console.log(this.name + ": addTask - " + task);
             return true;
         }
         if (task.includes("task_3_2")) {
             this.tasks.set(task, new Task(task, 3, 2));
             this.time--;
-            set(this.varTime, this.time);
+            this.setTimeFormat();
             console.log(this.name + ": addTask - " + task);
             return true;
         }
         if (task.includes("task_4_3")) {
             this.tasks.set(task, new Task(task, 4, 3));
             this.time--;
-            set(this.varTime, this.time);
+            this.setTimeFormat();
             console.log(this.name + ": addTask - " + task);
             return true;
         }
@@ -309,8 +309,20 @@ Employee.prototype.delTask = function (task) {
 Employee.prototype.setTime = function () {
     console.log(this.name + ": setTime - ");
     this.time = this.motiv / 2;
-    set(this.varTime, this.time);
+    this.setTimeFormat();
 };
+
+Employee.prototype.setTimeFormat = function () {
+    if(this.time === Math.floor(this.time)){
+        set(this.varTime, Math.floor(this.time)+" ч. 00 мин.");
+        return;
+    }
+    if(this.time > Math.floor(this.time)){
+        set(this.varTime, Math.floor(this.time)+" ч. 30 мин.");
+        return;
+    }
+}
+
 Employee.prototype.setMotiv = function () {
     console.log(this.name + ": setMotiv");
     if (this.tasks.size > 0 || this.time === 0) this.motiv -= 2;
