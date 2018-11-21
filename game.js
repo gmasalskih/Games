@@ -81,6 +81,8 @@ function init() {
     chief = new Chief();
 }
 
+setTimeout(init, 5000);
+
 
 // var gameVars = new Map();
 
