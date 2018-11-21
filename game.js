@@ -313,12 +313,12 @@ Employee.prototype.setTime = function () {
 };
 
 Employee.prototype.setTimeFormat = function () {
-    if(this.time === Math.floor(this.time)){
-        set(this.varTime, Math.floor(this.time)+" ч. 00 мин.");
+    if (this.time === Math.floor(this.time)) {
+        set(this.varTime, Math.floor(this.time) + "ч 00м");
         return;
     }
-    if(this.time > Math.floor(this.time)){
-        set(this.varTime, Math.floor(this.time)+" ч. 30 мин.");
+    if (this.time > Math.floor(this.time)) {
+        set(this.varTime, Math.floor(this.time) + "ч " + Math.round(60 * (this.time - Math.floor(this.time))) + "м");
         return;
     }
 }
