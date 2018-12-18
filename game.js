@@ -1,47 +1,3 @@
-// var flossGlobalStorageV1_0 = {
-//     binds: []
-// };
-//
-// function FLOSS({name, value, action, defer, bind}) {
-//
-//     let globalObjectName = (typeof global !== 'undefined') ? 'global' : 'window';
-//     let globalOblectThis = (typeof global !== 'undefined') ? global : window;
-//
-//     let context = {
-//         name: bind ? `bind-${flossGlobalStorageV1_0.length}` : globalObjectName,
-//         obj: bind ? bind : globalOblectThis
-//     };
-//
-//     flossGlobalStorageV1_0[context.name] = {};
-//     flossGlobalStorageV1_0[context.name][name] = value;
-//
-//     Object.defineProperty(context.obj, name, {
-//         get: () => {
-//             return flossGlobalStorageV1_0[context.name][name];
-//         },
-//         set: (value) => {
-//             /* только при фактическом изменении, но не при каждом вызове сеттера */
-//             if (value !== flossGlobalStorageV1_0[context.name][name]) {
-//                 flossGlobalStorageV1_0[context.name][name] = value;
-//                 action(flossGlobalStorageV1_0[context.name][name]);
-//             }
-//         }
-//     });
-//
-//     if (!defer) action(flossGlobalStorageV1_0[context.name][name]);
-//
-// }
-//
-//
-// FLOSS({
-//     name: 'search',
-//     value: '',
-//     action: (value) => {
-//
-//     },
-//     defer: true
-// });
-
 setTimeout(init, 5000);
 
 function go(varName, value) {
@@ -68,6 +24,24 @@ function go(varName, value) {
 
 function completed() {
     console.log("completed");
+    set("task_2_1_2_note_done", false);
+    set("task_2_1_1_note_done", false);
+    set("task_2_1_3_note_done", false);
+    set("task_2_1_4_note_done", false);
+    set("task_2_1_5_note_done", false);
+    set("task_2_1_6_note_done", false);
+    set("task_3_2_1_note_done", false);
+    set("task_3_2_2_note_done", false);
+    set("task_3_2_3_note_done", false);
+    set("task_3_2_4_note_done", false);
+    set("task_3_2_5_note_done", false);
+    set("task_3_2_6_note_done", false);
+    set("task_4_3_1_note_done", false);
+    set("task_4_3_2_note_done", false);
+    set("task_4_3_3_note_done", false);
+    set("task_4_3_4_note_done", false);
+    set("task_4_3_5_note_done", false);
+    set("task_4_3_6_note_done", false);
     chief.doJob();
     chief.setEmployeeMotiv();
     chief.setTime();
@@ -80,11 +54,6 @@ function init() {
     set = GetPlayer().SetVar;
     chief = new Chief();
 }
-
-setTimeout(init, 5000);
-
-
-// var gameVars = new Map();
 
 function addEvent(varName) {
     //Это костыль
@@ -108,9 +77,7 @@ function addEvent(varName) {
     );
 }
 
-
 //   ---GAMES---
-
 function Task(name, time, many) {
     this.name = name;
     this.time = time;
@@ -225,8 +192,9 @@ Chief.prototype.doJob = function () {
         (task) => {
             if (this.time >= task.time) {
                 this.time -= task.time;
-                // this.delTask(task.name);
                 chief.addMany(task.many);
+            } else {
+                set(task.name.substring(0, 11) + "note_done", true);
             }
         }
     );
@@ -334,8 +302,6 @@ Employee.prototype.setMotiv = function () {
 }
 Employee.prototype.doJob = function () {
     console.log(this.name + ": doJob");
-    var arr = [];
-
     Array.from(this.tasks.values()).sort(
         (a, b) => {
             if (a.time > b.time) return 1;
@@ -347,29 +313,9 @@ Employee.prototype.doJob = function () {
             if (this.time >= task.time) {
                 this.time -= task.time;
                 chief.addMany(task.many);
+            } else {
+                set(task.name.substring(0, 11) + "note_done", true);
             }
         }
     );
-
-
-    // this.tasks.forEach(
-    //     (task, taskName) => {
-    //         arr.push(task);
-    //     }
-    // );
-    // arr.sort(
-    //     (a, b) => {
-    //         if (a.time > b.time) return 1;
-    //         if (a.time === b.time) return 0;
-    //         if (a.time < b.time) return -1;
-    //     }
-    // ).forEach(
-    //     (task) => {
-    //         if (this.time >= task.time) {
-    //             this.time -= task.time;
-    //             this.delTask(task.name);
-    //             chief.addMany(task.many);
-    //         }
-    //     }
-    // );
 };

@@ -11,6 +11,9 @@ GameVar.prototype.checkVar = function () {
     }
 };
 
+
+
+
 function initVars() {
     console.log("initVars");
     gameVars = new Map()

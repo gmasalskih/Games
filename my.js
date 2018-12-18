@@ -8,15 +8,9 @@ function exportToExcel() {
     };
 
     wb.SheetNames.push("Result");
-    // var player = GetPlayer();
 
     var ws_data = [
         ['Текст мотиватора', 'Введенный пользователем текст'],
-        // [player.GetVar("notebook_note_1_name"), player.GetVar("notebook_note_1")],
-        // [player.GetVar("notebook_note_2_name"), player.GetVar("notebook_note_2")],
-        // [player.GetVar("notebook_note_3_name"), player.GetVar("notebook_note_3")],
-        // [player.GetVar("notebook_note_4_name"), player.GetVar("notebook_note_4")],
-        // [player.GetVar("notebook_note_5_name"), player.GetVar("notebook_note_5")]
         [get("notebook_note_1_name"), get("notebook_note_1")],
         [get("notebook_note_2_name"), get("notebook_note_2")],
         [get("notebook_note_3_name"), get("notebook_note_3")],
