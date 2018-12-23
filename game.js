@@ -95,7 +95,6 @@ Chief.prototype.setTime = function () {
 Chief.prototype.addSelfTask = function (task) {
     console.log(this.name + ": addSelfTask - " + task);
     if (task.includes(this.name)) {
-        set(this.varTime, this.time);
         if (task.includes("task_2_1")) {
             this.tasks.set(task, new Task(task, 2, 1));
         }
@@ -117,7 +116,8 @@ Chief.prototype.addEmployeeTask = function (task) {
         this.employee.forEach(
             (employee, name) => {
                 if (task.includes(name) && employee.addTask(task)) {
-                    this.time--;
+                    // if (get("round_count") !== 0)
+                        this.time--;
                     set(this.varTime, this.time);
                 }
             }
@@ -154,7 +154,7 @@ Chief.prototype.addMany = function (many) {
 };
 Chief.prototype.doJob = function () {
     this.many -= 20;
-    // if (this.many < 0) this.many = 0;
+    if (this.many < 0) this.many = 0;
     set(this.varMoney, this.many);
     console.log(this.name + ": doJob");
     Array.from(this.tasks.values()).sort(
@@ -224,7 +224,8 @@ Employee.prototype.addTask = function (task) {
     if (this.time >= 1 && task.includes(this.name)) {
         if (task.includes("task_2_1")) {
             this.tasks.set(task, new Task(task, 2, 1));
-            this.time--;
+            // if (get("round_count") !== 0)
+                this.time--;
             this.setTimeFormat();
             console.log(this.name + ": addTask - " + task);
             return true;
@@ -292,12 +293,107 @@ Employee.prototype.doJob = function () {
                 chief.addMany(task.many);
                 this.tasks.delete(task.name);
                 set(task.name.substring(0, 11) + "note_done", false);
-                console.log(task.name +  " done - "+ get(task.name.substring(0, 11) + "note_done"));
+                console.log(task.name + " done - " + get(task.name.substring(0, 11) + "note_done"));
                 console.log(this.tasks);
             } else {
                 set(task.name.substring(0, 11) + "note_done", true);
-                console.log(task.name +  " notDone - "+ get(task.name.substring(0, 11) + "note_done"));
+                console.log(task.name + " notDone - " + get(task.name.substring(0, 11) + "note_done"));
             }
         }
     );
 };
+
+set_gen_sluchayno = new Set();
+
+function gen_sluchayno() {
+    var max = 40;
+    var min = 1;
+    while (true) {
+        if (set_gen_sluchayno.size >= 40) {
+            set("sluchayno", 0);
+            return;
+        }
+        var score = Math.floor(Math.random() * (max - min + 1)) + min;
+        if (!set_gen_sluchayno.has(score)) {
+            set_gen_sluchayno.add(score);
+            set("sluchayno", score);
+            return;
+        }
+    }
+}
+
+set_gen_opr_komf = new Set();
+
+function gen_opr_komf() {
+    var max = 10;
+    var min = 1;
+    while (true) {
+        if (set_gen_opr_komf.size >= 40) {
+            set("opr_komf", 0);
+            return;
+        }
+        var score = Math.floor(Math.random() * (max - min + 1)) + min;
+        if (!set_gen_opr_komf.has(score)) {
+            set_gen_opr_komf.add(score);
+            set("opr_komf", score);
+            return;
+        }
+    }
+}
+
+set_gen_opr_lyudi = new Set();
+
+function gen_opr_lyudi() {
+    var max = 10;
+    var min = 1;
+    while (true) {
+        if (set_gen_opr_lyudi.size >= 40) {
+            set("opr_lyudi", 0);
+            return;
+        }
+        var score = Math.floor(Math.random() * (max - min + 1)) + min;
+        if (!set_gen_opr_lyudi.has(score)) {
+            set_gen_opr_lyudi.add(score);
+            set("opr_lyudi", score);
+            return;
+        }
+    }
+}
+
+set_gen_opr_delo = new Set();
+
+function gen_opr_delo() {
+    var max = 10;
+    var min = 1;
+    while (true) {
+        if (set_gen_opr_delo.size >= 40) {
+            set("opr_delo", 0);
+            return;
+        }
+        var score = Math.floor(Math.random() * (max - min + 1)) + min;
+        if (!set_gen_opr_delo.has(score)) {
+            set_gen_opr_delo.add(score);
+            set("opr_delo", score);
+            return;
+        }
+    }
+}
+
+set_gen_opr_prizn = new Set();
+
+function gen_opr_prizn() {
+    var max = 10;
+    var min = 1;
+    while (true) {
+        if (set_gen_opr_prizn.size >= 40) {
+            set("opr_prizn", 0);
+            return;
+        }
+        var score = Math.floor(Math.random() * (max - min + 1)) + min;
+        if (!set_gen_opr_prizn.has(score)) {
+            set_gen_opr_prizn.add(score);
+            set("opr_prizn", score);
+            return;
+        }
+    }
+}
