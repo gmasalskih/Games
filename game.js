@@ -328,7 +328,7 @@ function gen_opr_komf() {
     var max = 10;
     var min = 1;
     while (true) {
-        if (set_gen_opr_komf.size >= 40) {
+        if (set_gen_opr_komf.size >= 10) {
             set("opr_komf", 0);
             return;
         }
@@ -347,7 +347,7 @@ function gen_opr_lyudi() {
     var max = 10;
     var min = 1;
     while (true) {
-        if (set_gen_opr_lyudi.size >= 40) {
+        if (set_gen_opr_lyudi.size >= 10) {
             set("opr_lyudi", 0);
             return;
         }
@@ -366,7 +366,7 @@ function gen_opr_delo() {
     var max = 10;
     var min = 1;
     while (true) {
-        if (set_gen_opr_delo.size >= 40) {
+        if (set_gen_opr_delo.size >= 10) {
             set("opr_delo", 0);
             return;
         }
@@ -385,7 +385,7 @@ function gen_opr_prizn() {
     var max = 10;
     var min = 1;
     while (true) {
-        if (set_gen_opr_prizn.size >= 40) {
+        if (set_gen_opr_prizn.size >= 10) {
             set("opr_prizn", 0);
             return;
         }
