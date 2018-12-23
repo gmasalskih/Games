@@ -24,24 +24,6 @@ function go(varName, value) {
 
 function completed() {
     console.log("completed");
-    set("task_2_1_2_note_done", false);
-    set("task_2_1_1_note_done", false);
-    set("task_2_1_3_note_done", false);
-    set("task_2_1_4_note_done", false);
-    set("task_2_1_5_note_done", false);
-    set("task_2_1_6_note_done", false);
-    set("task_3_2_1_note_done", false);
-    set("task_3_2_2_note_done", false);
-    set("task_3_2_3_note_done", false);
-    set("task_3_2_4_note_done", false);
-    set("task_3_2_5_note_done", false);
-    set("task_3_2_6_note_done", false);
-    set("task_4_3_1_note_done", false);
-    set("task_4_3_2_note_done", false);
-    set("task_4_3_3_note_done", false);
-    set("task_4_3_4_note_done", false);
-    set("task_4_3_5_note_done", false);
-    set("task_4_3_6_note_done", false);
     chief.doJob();
     chief.setEmployeeMotiv();
     chief.setTime();
@@ -57,17 +39,15 @@ function init() {
 
 function addEvent(varName) {
     //Это костыль
-    console.log("addEvent -" + varName);
+    console.log("addEvent - " + varName);
     if (varName === "isRandom") {
         if (get("isRandom") && chief.time >= 1) {
             chief.time--;
             set(chief.varTime, chief.time);
-            return;
         }
         if (!get("isRandom") && chief.time >= 2) {
             chief.time -= 2;
             set(chief.varTime, chief.time);
-            return;
         }
     }
     gameVars.forEach(
@@ -174,15 +154,10 @@ Chief.prototype.addMany = function (many) {
 };
 Chief.prototype.doJob = function () {
     this.many -= 20;
+    // if (this.many < 0) this.many = 0;
     set(this.varMoney, this.many);
     console.log(this.name + ": doJob");
-    var arr = [];
-    this.tasks.forEach(
-        (task, taskName) => {
-            arr.push(task);
-        }
-    );
-    arr.sort(
+    Array.from(this.tasks.values()).sort(
         (a, b) => {
             if (a.time > b.time) return 1;
             if (a.time === b.time) return 0;
@@ -192,7 +167,9 @@ Chief.prototype.doJob = function () {
         (task) => {
             if (this.time >= task.time) {
                 this.time -= task.time;
-                chief.addMany(task.many);
+                this.addMany(task.many);
+                this.tasks.delete(task.name);
+                set(task.name.substring(0, 11) + "note_done", false);
             } else {
                 set(task.name.substring(0, 11) + "note_done", true);
             }
@@ -238,7 +215,7 @@ Employee.prototype.addMotiv = function (motiv) {
         if (motiv.includes("komf")) this.motiv += this.komf;
         if (this.motiv > 17) this.motiv = 17;
         set(this.varMotiv, this.motiv);
-        set(motiv, false);
+        set(motiv, true);
         return true;
     }
     return false;
@@ -304,17 +281,22 @@ Employee.prototype.doJob = function () {
     console.log(this.name + ": doJob");
     Array.from(this.tasks.values()).sort(
         (a, b) => {
-            if (a.time > b.time) return 1;
+            if (a.time > b.time) return -1;
             if (a.time === b.time) return 0;
-            if (a.time < b.time) return -1;
+            if (a.time < b.time) return 1;
         }
     ).forEach(
         (task) => {
             if (this.time >= task.time) {
                 this.time -= task.time;
                 chief.addMany(task.many);
+                this.tasks.delete(task.name);
+                set(task.name.substring(0, 11) + "note_done", false);
+                console.log(task.name +  " done - "+ get(task.name.substring(0, 11) + "note_done"));
+                console.log(this.tasks);
             } else {
                 set(task.name.substring(0, 11) + "note_done", true);
+                console.log(task.name +  " notDone - "+ get(task.name.substring(0, 11) + "note_done"));
             }
         }
     );
