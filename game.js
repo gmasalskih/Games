@@ -168,7 +168,7 @@ Chief.prototype.doJob = function () {
             if (this.time >= task.time) {
                 this.time -= task.time;
                 this.addMany(task.many);
-                this.tasks.delete(task.name);
+                // this.tasks.delete(task.name);
                 set(task.name.substring(0, 11) + "note_done", false);
             } else {
                 set(task.name.substring(0, 11) + "note_done", true);
@@ -291,7 +291,7 @@ Employee.prototype.doJob = function () {
             if (this.time >= task.time) {
                 this.time -= task.time;
                 chief.addMany(task.many);
-                this.tasks.delete(task.name);
+                // this.tasks.delete(task.name);
                 set(task.name.substring(0, 11) + "note_done", false);
                 console.log(task.name + " done - " + get(task.name.substring(0, 11) + "note_done"));
                 console.log(this.tasks);
