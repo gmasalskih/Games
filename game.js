@@ -116,8 +116,7 @@ Chief.prototype.addEmployeeTask = function (task) {
         this.employee.forEach(
             (employee, name) => {
                 if (task.includes(name) && employee.addTask(task)) {
-                    // if (get("round_count") !== 0)
-                        this.time--;
+                    if (get("round_count") !== 0) this.time--;
                     set(this.varTime, this.time);
                 }
             }
@@ -153,8 +152,8 @@ Chief.prototype.addMany = function (many) {
     set(this.varMoney, this.many);
 };
 Chief.prototype.doJob = function () {
-    this.many -= 20;
-    if (this.many < 0) this.many = 0;
+    // this.many -= 20;
+    // if (this.many < 0) this.many = 0;
     set(this.varMoney, this.many);
     console.log(this.name + ": doJob");
     Array.from(this.tasks.values()).sort(
@@ -224,8 +223,7 @@ Employee.prototype.addTask = function (task) {
     if (this.time >= 1 && task.includes(this.name)) {
         if (task.includes("task_2_1")) {
             this.tasks.set(task, new Task(task, 2, 1));
-            // if (get("round_count") !== 0)
-                this.time--;
+            if (get("round_count") !== 0) this.time--;
             this.setTimeFormat();
             console.log(this.name + ": addTask - " + task);
             return true;
