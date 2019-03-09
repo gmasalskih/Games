@@ -1,7 +1,7 @@
 setTimeout(init, 5000);
 
 function go(varName, value) {
-    // console.log("go - " + varName + " - "+ value);
+    console.log("go - " + varName + " - "+ value);
     if (value === true) {
         if (varName.includes("delo") || varName.includes("prizn") || varName.includes("lyudi") || varName.includes("komf")) {
             chief.addEmployeeMotiv(varName);
@@ -62,6 +62,7 @@ function Task(name, time, many) {
     this.name = name;
     this.time = time;
     this.many = many;
+    this.isDone = false;
 }
 
 function Chief() {
@@ -271,8 +272,20 @@ Employee.prototype.setTimeFormat = function () {
 
 Employee.prototype.setMotiv = function () {
     console.log(this.name + ": setMotiv");
-    if (this.tasks.size > 0 || this.time === 0) this.motiv -= 2;
-    else this.motiv--;
+    if (this.time === 0) {
+        this.motiv -= 2;
+    } else if (this.tasks.size === 0) {
+        this.motiv--;
+    } else {
+        var notDoneTask = new Set();
+        Array.from(this.tasks.values()).forEach(
+            (task) => {
+                if (!task.isDone) notDoneTask.add(task);
+            }
+        );
+        if (notDoneTask.size > 0) this.motiv -= 2;
+        else this.motiv--;
+    }
     if (this.motiv < 0) this.motiv = 0;
     set(this.varMotiv, this.motiv)
 }
@@ -291,10 +304,12 @@ Employee.prototype.doJob = function () {
                 chief.addMany(task.many);
                 // this.tasks.delete(task.name);
                 set(task.name.substring(0, 11) + "note_done", false);
+                task.isDone = true;
                 console.log(task.name + " done - " + get(task.name.substring(0, 11) + "note_done"));
                 console.log(this.tasks);
             } else {
                 set(task.name.substring(0, 11) + "note_done", true);
+                task.isDone = false;
                 console.log(task.name + " notDone - " + get(task.name.substring(0, 11) + "note_done"));
             }
         }
