@@ -141,8 +141,10 @@ Chief.prototype.addEmployeeMotiv = function (motiv) {
         this.employee.forEach(
             (employee, name) => {
                 if (motiv.includes(name) && employee.addMotiv(motiv)) {
-                    this.time--;
-                    set(this.varTime, this.time);
+                    if (!get(motiv.split("_")[0] + "_group_" + name)) {
+                        this.time--;
+                        set(this.varTime, this.time);
+                    }
                 }
             }
         );
@@ -322,9 +324,8 @@ Employee.prototype.doJob = function () {
 set_gen_sluchayno = new Set();
 
 function gen_sluchayno() {
-
-    var max = 40;
     var min = 1;
+    var max = 40;
     while (true) {
         if (set_gen_sluchayno.size >= 40) {
             set("sluchayno", 0);
@@ -334,8 +335,13 @@ function gen_sluchayno() {
         var score = Math.floor(Math.random() * (max - min + 1)) + min;
         if (!set_gen_sluchayno.has(score)) {
             set_gen_sluchayno.add(score);
+            if (score >= 1 && score <= 10) set_gen_opr_komf.add(score);
+            if (score >= 11 && score <= 20) set_gen_opr_prizn.add(score);
+            if (score >= 21 && score <= 30) set_gen_opr_delo.add(score);
+            if (score >= 31 && score <= 40) set_gen_opr_lyudi.add(score);
             set("sluchayno", score);
             console.log("sluchayno" + " - " + get("sluchayno"));
+            console.log(set_gen_sluchayno);
             return;
         }
     }
@@ -344,8 +350,8 @@ function gen_sluchayno() {
 set_gen_opr_komf = new Set();
 
 function gen_opr_komf() {
-    var max = 10;
     var min = 1;
+    var max = 10;
     while (true) {
         if (set_gen_opr_komf.size >= 10) {
             set("opr_komf", 0);
@@ -353,52 +359,13 @@ function gen_opr_komf() {
             return;
         }
         var score = Math.floor(Math.random() * (max - min + 1)) + min;
-        if (!set_gen_opr_komf.has(score)) {
+        if (!set_gen_opr_komf.has(score) && !set_gen_sluchayno.has(score)) {
             set_gen_opr_komf.add(score);
+            set_gen_sluchayno.add(score);
             set("opr_komf", score);
             console.log("opr_komf" + " - " + get("opr_komf"));
-            return;
-        }
-    }
-}
-
-set_gen_opr_lyudi = new Set();
-
-function gen_opr_lyudi() {
-    var max = 10;
-    var min = 1;
-    while (true) {
-        if (set_gen_opr_lyudi.size >= 10) {
-            set("opr_lyudi", 0);
-            console.log("opr_lyudi" + " - " + get("opr_lyudi"));
-            return;
-        }
-        var score = Math.floor(Math.random() * (max - min + 1)) + min;
-        if (!set_gen_opr_lyudi.has(score)) {
-            set_gen_opr_lyudi.add(score);
-            set("opr_lyudi", score);
-            console.log("opr_lyudi" + " - " + get("opr_lyudi"));
-            return;
-        }
-    }
-}
-
-set_gen_opr_delo = new Set();
-
-function gen_opr_delo() {
-    var max = 10;
-    var min = 1;
-    while (true) {
-        if (set_gen_opr_delo.size >= 10) {
-            set("opr_delo", 0);
-            console.log("opr_delo" + " - " + get("opr_delo"));
-            return;
-        }
-        var score = Math.floor(Math.random() * (max - min + 1)) + min;
-        if (!set_gen_opr_delo.has(score)) {
-            set_gen_opr_delo.add(score);
-            set("opr_delo", score);
-            console.log("opr_delo" + " - " + get("opr_delo"));
+            console.log(set_gen_opr_komf);
+            console.log(set_gen_sluchayno);
             return;
         }
     }
@@ -407,8 +374,8 @@ function gen_opr_delo() {
 set_gen_opr_prizn = new Set();
 
 function gen_opr_prizn() {
-    var max = 10;
-    var min = 1;
+    var min = 11;
+    var max = 20;
     while (true) {
         if (set_gen_opr_prizn.size >= 10) {
             set("opr_prizn", 0);
@@ -416,10 +383,61 @@ function gen_opr_prizn() {
             return;
         }
         var score = Math.floor(Math.random() * (max - min + 1)) + min;
-        if (!set_gen_opr_prizn.has(score)) {
+        if (!set_gen_opr_prizn.has(score) && !set_gen_sluchayno.has(score)) {
             set_gen_opr_prizn.add(score);
+            set_gen_sluchayno.add(score);
             set("opr_prizn", score);
             console.log("opr_prizn" + " - " + get("opr_prizn"));
+            console.log(set_gen_opr_prizn);
+            console.log(set_gen_sluchayno);
+            return;
+        }
+    }
+}
+
+set_gen_opr_delo = new Set();
+
+function gen_opr_delo() {
+    var min = 21;
+    var max = 30;
+    while (true) {
+        if (set_gen_opr_delo.size >= 10) {
+            set("opr_delo", 0);
+            console.log("opr_delo" + " - " + get("opr_delo"));
+            return;
+        }
+        var score = Math.floor(Math.random() * (max - min + 1)) + min;
+        if (!set_gen_opr_delo.has(score) && !set_gen_sluchayno.has(score)) {
+            set_gen_opr_delo.add(score);
+            set_gen_sluchayno.add(score);
+            set("opr_delo", score);
+            console.log("opr_delo" + " - " + get("opr_delo"));
+            console.log(set_gen_opr_delo);
+            console.log(set_gen_sluchayno);
+            return;
+        }
+    }
+}
+
+set_gen_opr_lyudi = new Set();
+
+function gen_opr_lyudi() {
+    var min = 31;
+    var max = 40;
+    while (true) {
+        if (set_gen_opr_lyudi.size >= 10) {
+            set("opr_lyudi", 0);
+            console.log("opr_lyudi" + " - " + get("opr_lyudi"));
+            return;
+        }
+        var score = Math.floor(Math.random() * (max - min + 1)) + min;
+        if (!set_gen_opr_lyudi.has(score) && !set_gen_sluchayno.has(score)) {
+            set_gen_opr_lyudi.add(score);
+            set_gen_sluchayno.add(score);
+            set("opr_lyudi", score);
+            console.log("opr_lyudi" + " - " + get("opr_lyudi"));
+            console.log(set_gen_opr_lyudi);
+            console.log(set_gen_sluchayno);
             return;
         }
     }
