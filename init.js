@@ -9,7 +9,11 @@ GameVar.prototype.checkVar = function () {
         this.oldValue = get(this.varName);
         go(this.varName, this.oldValue);
     }
-}
+};
+
+
+
+
 function initVars() {
     console.log("initVars");
     gameVars = new Map()

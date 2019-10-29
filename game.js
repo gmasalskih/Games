@@ -1,7 +1,6 @@
 setTimeout(init, 5000);
 
 function go(varName, value) {
-    console.log("go - " + varName + " - " + value);
     if (value === true) {
         if (varName.includes("delo") || varName.includes("prizn") || varName.includes("lyudi") || varName.includes("komf")) {
             chief.addEmployeeMotiv(varName);
@@ -23,14 +22,24 @@ function go(varName, value) {
 }
 
 function completed() {
-    console.log("completed");
     chief.doJob();
     chief.setEmployeeMotiv();
     chief.setTime();
+    if (get("round_count") === 10){
+        parent.SetScore(80, 100, 0);
+        parent.SCORM2004_CallSetValue("cmi.completion_status", "completed");
+        parent.SCORM2004_CallSetValue("cmi.success_status", "passed");
+        parent.SCORM2004_CallCommit();
+    }
+    if (get("round_count") === 15){
+        parent.SetScore(120, 120, 0);
+        parent.SCORM2004_CallSetValue("cmi.completion_status", "completed");
+        parent.SCORM2004_CallSetValue("cmi.success_status", "passed");
+        parent.SCORM2004_CallCommit();
+    }
 }
 
 function init() {
-    console.log("init");
     initVars();
     get = GetPlayer().GetVar;
     set = GetPlayer().SetVar;
@@ -39,7 +48,6 @@ function init() {
 
 function addEvent(varName) {
     //Это костыль
-    console.log("addEvent - " + varName);
     if (varName === "isRandom") {
         if (get("isRandom") && chief.time >= 1) {
             chief.time--;
@@ -84,7 +92,6 @@ function Chief() {
 }
 
 Chief.prototype.setTime = function () {
-    console.log(this.name + ": setTime - ");
     this.time = 8;
     set(this.varTime, this.time);
     this.employee.forEach(
@@ -94,7 +101,6 @@ Chief.prototype.setTime = function () {
     );
 };
 Chief.prototype.addSelfTask = function (task) {
-    console.log(this.name + ": addSelfTask - " + task);
     if (task.includes(this.name)) {
         if (task.includes("task_2_1")) {
             this.tasks.set(task, new Task(task, 2, 1));
@@ -108,12 +114,10 @@ Chief.prototype.addSelfTask = function (task) {
     }
 };
 Chief.prototype.delSelfTask = function (task) {
-    console.log(this.name + ": delSelfTask - " + task);
     set(task.substring(0, 11) + "note_done", false);
     this.tasks.delete(task);
 };
 Chief.prototype.addEmployeeTask = function (task) {
-    // console.log(this.name + ": addEmployeeTask - " + task);
     if (this.time >= 1) {
         this.employee.forEach(
             (employee, name) => {
@@ -126,7 +130,6 @@ Chief.prototype.addEmployeeTask = function (task) {
     }
 };
 Chief.prototype.delEmployeeTask = function (task) {
-    console.log(this.name + ": delEmployeeTask - " + task);
     this.employee.forEach(
         (employee, name) => {
             if (task.includes(name)) {
@@ -136,7 +139,6 @@ Chief.prototype.delEmployeeTask = function (task) {
     );
 };
 Chief.prototype.addEmployeeMotiv = function (motiv) {
-    console.log(this.name + ": addEmployeeMotiv - " + motiv);
     if (this.time >= 1) {
         this.employee.forEach(
             (employee, name) => {
@@ -151,7 +153,6 @@ Chief.prototype.addEmployeeMotiv = function (motiv) {
     }
 };
 Chief.prototype.addMany = function (many) {
-    console.log(this.name + ": addMany - " + many);
     this.many += many;
     set(this.varMoney, this.many);
 };
@@ -159,7 +160,6 @@ Chief.prototype.doJob = function () {
     // this.many -= 20;
     // if (this.many < 0) this.many = 0;
     set(this.varMoney, this.many);
-    console.log(this.name + ": doJob");
     Array.from(this.tasks.values()).sort(
         (a, b) => {
             if (a.time > b.time) return 1;
@@ -171,10 +171,12 @@ Chief.prototype.doJob = function () {
             if (this.time >= task.time) {
                 this.time -= task.time;
                 this.addMany(task.many);
-                // this.tasks.delete(task.name);
                 set(task.name.substring(0, 11) + "note_done", false);
+                // this.tasks.delete(task.name);
+                console.log(task.name+" $$ false");
             } else {
                 set(task.name.substring(0, 11) + "note_done", true);
+                console.log(task.name+" $$ true");
             }
         }
     );
@@ -186,7 +188,6 @@ Chief.prototype.doJob = function () {
     this.many = 0;
 }
 Chief.prototype.setEmployeeMotiv = function () {
-    console.log(this.name + ": setEmployeeMotiv - ");
     this.employee.forEach(
         (employee, name) => {
             employee.setMotiv();
@@ -209,7 +210,6 @@ function Employee(name, varTime, varMotiv, delo, prizn, lyudi, komf) {
 }
 
 Employee.prototype.addMotiv = function (motiv) {
-    console.log(this.name + ": addMotiv - " + motiv);
     if (this.time >= 1 && motiv.includes(this.name)) {
         this.time--;
         this.setTimeFormat();
@@ -230,28 +230,24 @@ Employee.prototype.addTask = function (task) {
             this.tasks.set(task, new Task(task, 2, 1));
             if (get("round_count") !== 0) this.time--;
             this.setTimeFormat();
-            console.log(this.name + ": addTask - " + task);
             return true;
         }
         if (task.includes("task_3_2")) {
             this.tasks.set(task, new Task(task, 3, 2));
             if (get("round_count") !== 0) this.time--;
             this.setTimeFormat();
-            console.log(this.name + ": addTask - " + task);
             return true;
         }
         if (task.includes("task_4_3")) {
             this.tasks.set(task, new Task(task, 4, 3));
             if (get("round_count") !== 0) this.time--;
             this.setTimeFormat();
-            console.log(this.name + ": addTask - " + task);
             return true;
         }
     }
     return false;
 };
 Employee.prototype.delTask = function (task) {
-    console.log(this.name + ": delTask - " + task);
     if (task.includes(this.name)) {
         set(task.substring(0, 11) + "note_done", false);
         set(task, false);
@@ -259,14 +255,12 @@ Employee.prototype.delTask = function (task) {
     }
 };
 Employee.prototype.setTime = function () {
-    console.log(this.name + ": setTime - ");
     this.time = this.motiv / 2;
     this.setTimeFormat();
 };
 
 Employee.prototype.setTimeFormat = function () {
     if (this.time === Math.floor(this.time)) {
-        console.log("setTimeFormat");
         set(this.varTime, Math.floor(this.time) + "ч 00м");
         return;
     }
@@ -276,7 +270,6 @@ Employee.prototype.setTimeFormat = function () {
 };
 
 Employee.prototype.setMotiv = function () {
-    console.log(this.name + ": setMotiv");
     if (this.time === 0) {
         this.motiv -= 2;
     } else if (this.tasks.size === 0) {
@@ -295,7 +288,6 @@ Employee.prototype.setMotiv = function () {
     set(this.varMotiv, this.motiv)
 };
 Employee.prototype.doJob = function () {
-    console.log(this.name + ": doJob");
     Array.from(this.tasks.values()).sort(
         (a, b) => {
             if (a.time > b.time) return -1;
@@ -304,18 +296,18 @@ Employee.prototype.doJob = function () {
         }
     ).forEach(
         (task) => {
+            console.log(task);
             if (this.time >= task.time) {
                 this.time -= task.time;
                 chief.addMany(task.many);
                 // this.tasks.delete(task.name);
                 set(task.name.substring(0, 11) + "note_done", false);
                 task.isDone = true;
-                console.log(task.name + " done - " + get(task.name.substring(0, 11) + "note_done"));
-                console.log(this.tasks);
+                console.log(task.name+" $$ false");
             } else {
                 set(task.name.substring(0, 11) + "note_done", true);
                 task.isDone = false;
-                console.log(task.name + " notDone - " + get(task.name.substring(0, 11) + "note_done"));
+                console.log(task.name+" $$ true");
             }
         }
     );
@@ -329,7 +321,6 @@ function gen_sluchayno() {
     while (true) {
         if (set_gen_sluchayno.size >= 40) {
             set("sluchayno", 0);
-            console.log("sluchayno" + " - " + get("sluchayno"));
             return;
         }
         var score = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -340,8 +331,6 @@ function gen_sluchayno() {
             if (score >= 21 && score <= 30) set_gen_opr_delo.add(score);
             if (score >= 31 && score <= 40) set_gen_opr_lyudi.add(score);
             set("sluchayno", score);
-            console.log("sluchayno" + " - " + get("sluchayno"));
-            console.log(set_gen_sluchayno);
             return;
         }
     }
@@ -355,7 +344,6 @@ function gen_opr_komf() {
     while (true) {
         if (set_gen_opr_komf.size >= 10) {
             set("opr_komf", 0);
-            console.log("opr_komf" + " - " + get("opr_komf"));
             return;
         }
         var score = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -363,9 +351,6 @@ function gen_opr_komf() {
             set_gen_opr_komf.add(score);
             set_gen_sluchayno.add(score);
             set("opr_komf", score);
-            console.log("opr_komf" + " - " + get("opr_komf"));
-            console.log(set_gen_opr_komf);
-            console.log(set_gen_sluchayno);
             return;
         }
     }
@@ -379,7 +364,6 @@ function gen_opr_prizn() {
     while (true) {
         if (set_gen_opr_prizn.size >= 10) {
             set("opr_prizn", 0);
-            console.log("opr_prizn" + " - " + get("opr_prizn"));
             return;
         }
         var score = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -387,9 +371,6 @@ function gen_opr_prizn() {
             set_gen_opr_prizn.add(score);
             set_gen_sluchayno.add(score);
             set("opr_prizn", score);
-            console.log("opr_prizn" + " - " + get("opr_prizn"));
-            console.log(set_gen_opr_prizn);
-            console.log(set_gen_sluchayno);
             return;
         }
     }
@@ -403,7 +384,6 @@ function gen_opr_delo() {
     while (true) {
         if (set_gen_opr_delo.size >= 10) {
             set("opr_delo", 0);
-            console.log("opr_delo" + " - " + get("opr_delo"));
             return;
         }
         var score = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -411,9 +391,6 @@ function gen_opr_delo() {
             set_gen_opr_delo.add(score);
             set_gen_sluchayno.add(score);
             set("opr_delo", score);
-            console.log("opr_delo" + " - " + get("opr_delo"));
-            console.log(set_gen_opr_delo);
-            console.log(set_gen_sluchayno);
             return;
         }
     }
@@ -427,7 +404,6 @@ function gen_opr_lyudi() {
     while (true) {
         if (set_gen_opr_lyudi.size >= 10) {
             set("opr_lyudi", 0);
-            console.log("opr_lyudi" + " - " + get("opr_lyudi"));
             return;
         }
         var score = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -435,9 +411,6 @@ function gen_opr_lyudi() {
             set_gen_opr_lyudi.add(score);
             set_gen_sluchayno.add(score);
             set("opr_lyudi", score);
-            console.log("opr_lyudi" + " - " + get("opr_lyudi"));
-            console.log(set_gen_opr_lyudi);
-            console.log(set_gen_sluchayno);
             return;
         }
     }
